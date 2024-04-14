@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="cricket.css">
+<head>
+  <title>Cricket Game</title>
+  <style>
+    body {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+ 
+  <video autoplay muted loop id="myVideo">
+    <source src="image/video.mp4" type="video/mp4">
+  </video>
+  <!-- Optional: some overlay text to describe the video -->
+  <div class="content">
+  
+  <h1>Bat Ball Stump Game</h1>
+
+  <button class="change" onclick="
+  let computerChoice = generateComputerChoice();
+  let resultMsg = getResult('Bat', computerChoice);
+  showResult('Bat', computerChoice, resultMsg);
+  ">  <img class="choice" src="image/bat.png" alt="bat_image"></button>
+
+  <button class="change" onclick="
+    computerChoice = generateComputerChoice();
+    resultMsg = getResult('Ball', computerChoice);
+    showResult('Ball', computerChoice, resultMsg);
+  ">  <img class="choice" src="image/ball.png" alt="bat_image"></button>
+
+  <button class="change" onclick="
+    computerChoice = generateComputerChoice();
+    resultMsg = getResult('Stump', computerChoice);
+    showResult('Stump', computerChoice, resultMsg);
+  ">  <img class="choice" src="image/stump.png" alt="bat_image"></button>
+
+  
+  
+  <h3 id="User-Choice"></h3>
+  <h3 id="computer-Choice"></h3>
+  <h3 id="result"></h3>
+  <h3 id="score"></h3>
+  <button  onclick="
+    localStorage.clear();
+    resetScore();
+  
+  "><img class="choice" src="image/reset.png" alt="reset_image"></button>
+
+   
+  </div>
+  <video autoplay muted loop id="myVideo1">
+    <source src="image/video.mp4" type="video/mp4">
+  </video>
+  
+
+
+
+
+
+  <script>
+    let scoreStr = localStorage.getItem('Score');
+    let score;
+    resetScore(scoreStr);
+
+    function resetScore(scoreStr){
+      score = scoreStr  ? JSON.parse(scoreStr) : {
+      win: 0,
+      lost: 0,
+      tie: 0,
+    
+    };
+
+    
+    score.displayScore = function() {
+        return `Score : Won:${score.win}, Lost:${score.lost}, Tie: ${score.tie}`;
+      }
+
+      showResult();
+    }
+
+    
+    function generateComputerChoice() {
+      //This will generate random number between 0 and 3
+      let randomNumber = Math.random() * 3;
+      if (randomNumber > 0 && randomNumber <= 1) {
+        return 'Bat';
+      } else if (randomNumber > 1 && randomNumber <= 2) {
+        return 'Ball';
+      } else {
+        return 'Stump'
+      }
+    }
+
+    function getResult(userMove, computerMove) {
+      if (userMove === 'Bat') {
+        if (computerMove === 'Ball') {
+          score.win++;
+          return 'User won.';
+        } else if (computerMove === 'Bat') {
+          score.tie++;
+          return `It's a tie`;
+        } else if (computerMove === 'Stump') {
+          score.lost++;
+          return 'Computer has won';
+        }
+      } else if (userMove === 'Ball') {
+        if (computerMove === 'Ball') {
+          score.tie++;
+          return `It's a tie`;
+        } else if (computerMove === 'Bat') {
+          score.lost++;
+          return 'Computer has won';
+        } else if (computerMove === 'Stump') {
+          score.win++;
+          return 'User won.';
+        }
+      } else {
+        if (computerMove === 'Ball') {
+          score.lost++;
+          return 'Computer has won';
+        } else if (computerMove === 'Bat') {
+          score.win++;
+          return 'User won.';
+        } else if (computerMove === 'Stump') {
+          score.tie++;
+          return `It's a tie`;
+        }
+      }
+    }
+
+    function showResult(userMove, computerMove, result) {
+
+      document.querySelector('#User-Choice').innerText = userMove !== undefined  ? `You have Choosen ${userMove}` : '';
+
+
+      document.querySelector('#computer-Choice').innerText = computerMove !== undefined ? `Computer have Choosen ${computerMove}` : '';
+      document.querySelector('#result').innerText = result !== undefined ? `Result is: ${result }` : '' ;
+      document.querySelector('#score').innerText = `${score.displayScore()}`;
+      localStorage.setItem('Score',JSON.stringify(score))
+    }
+  </script>
+</body>
+</html>
